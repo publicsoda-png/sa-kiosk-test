@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="da">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-title" content="Sense Archives">
+		<meta name="theme-color" content="#1a1919">
+		<meta name="description" content="Sense Archives — træd ind i kiosken Shop N Play en nat i København. Sense., CBDanmark og Sense Archives under ét tag.">
+		<meta name="format-detection" content="telephone=no">
+		<meta property="og:title" content="Sense Archives — Shop N Play">
+		<meta property="og:description" content="En nat i København. Træd ind i kiosken.">
+		<meta property="og:url" content="https://publicsoda-png.github.io/sa-kiosk/">
+		<meta property="og:image" content="https://publicsoda-png.github.io/sa-kiosk/og.jpg">
+		<meta property="og:image:width" content="1200">
+		<meta property="og:image:height" content="630">
+		<meta property="og:image:alt" content="Sense Archives — Shop N Play">
+		<meta property="og:site_name" content="Sense Archives">
+		<meta property="og:locale" content="da_DK">
+		<meta property="og:type" content="website">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="Sense Archives — Shop N Play">
+		<meta name="twitter:image" content="https://publicsoda-png.github.io/sa-kiosk/og.jpg">
+		<link rel="apple-touch-icon" href="icon-180.png">
+		<link rel="icon" href="icon-180.png">
+		<title>Sense Archives</title>
+		<style>
+@font-face {
+	font-family: "Cloister Black";
+	src: url("CloisterBlack.ttf") format("truetype");
+	font-display: block;
+}
+:root {
+	--charcoal: #1a1919;
+	--white: #f2f1ee;
+}
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+html, body {
+	width: 100%;
+	height: 100%;
+	background: var(--charcoal);
+	overscroll-behavior: none;
+}
+body {
+	color: var(--white);
+	overflow: hidden;
+	touch-action: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+	font-family: "Poppins", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+#canvas {
+	display: block;
+	position: fixed;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+	height: 100dvh;
+}
+#canvas:focus {
+	outline: none;
+}
+#status {
+	position: fixed;
+	inset: 0;
+	background-color: var(--charcoal);
+	background-image:
+		repeating-linear-gradient(45deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 44px),
+		repeating-linear-gradient(-45deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 44px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 14px;
+	visibility: hidden;
+	text-align: center;
+	padding: 0 16px;
+}
+#status-mascot {
+	width: 150px;
+	height: auto;
+	animation: breathe 2.8s ease-in-out infinite;
+	transform-origin: 50% 100%;
+}
+@keyframes breathe {
+	50% { transform: scale(1.02, 0.98); }
+}
+#status-title {
+	font-family: "Cloister Black", serif;
+	font-size: clamp(44px, 9vw, 84px);
+	line-height: 1;
+	color: var(--white);
+}
+#status-sub {
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	color: rgba(242, 241, 238, 0.6);
+}
+#status-bar {
+	width: min(280px, 70vw);
+	height: 2px;
+	margin-top: 10px;
+	background: rgba(242, 241, 238, 0.15);
+}
+#status-fill {
+	height: 100%;
+	width: 0%;
+	background: var(--white);
+	transition: width 0.15s;
+}
+#status-pct {
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	color: rgba(242, 241, 238, 0.6);
+	font-variant-numeric: tabular-nums;
+	min-height: 1em;
+}
+#rotate-hint {
+	position: fixed;
+	left: 50%;
+	top: calc(env(safe-area-inset-top, 0px) + 14px);
+	transform: translateX(-50%);
+	padding: 9px 16px;
+	background: rgba(26, 25, 25, 0.82);
+	border: 1px solid rgba(242, 241, 238, 0.25);
+	border-radius: 2px;
+	color: var(--white);
+	font-size: 13px;
+	font-weight: 600;
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.5s;
+	z-index: 3;
+}
+#rotate-hint.on {
+	opacity: 1;
+}
+#status-notice {
+	display: none;
+	max-width: 520px;
+	font-size: 15px;
+	color: var(--white);
+}
+#status-hint {
+	font-size: 13px;
+	color: rgba(242, 241, 238, 0.5);
+	max-width: 440px;
+}
+#status-links {
+	display: none;
+	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+#status-links a, noscript a {
+	color: var(--charcoal);
+	background: var(--white);
+	padding: 10px 16px;
+	font-weight: 600;
+	font-size: 14px;
+	text-decoration: none;
+	border-radius: 2px;
+}
+noscript {
+	position: fixed;
+	inset: auto 0 24px 0;
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	flex-wrap: wrap;
+	z-index: 2;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+
+	</head>
+	<body>
+		<canvas id="canvas">
+			Din browser understøtter ikke WebGL2.
+		</canvas>
+		<noscript>
+			<a href="https://senseshop.dk/">senseshop.dk</a>
+			<a href="https://cbdanmark.eu/">CBDanmark.eu</a>
+			<a href="https://sensearchives.com">sensearchives.com</a>
+		</noscript>
+
+		<div id="status">
+			<img id="status-mascot" src="mascot.png" alt="MASCOT">
+			<div id="status-title">Sense Archives</div>
+			<div id="status-sub">EN NAT I KØBENHAVN · SHOP N PLAY</div>
+			<div id="status-bar"><div id="status-fill"></div></div>
+			<div id="status-pct"></div>
+			<div id="status-notice"></div>
+			<div id="status-links">
+				<a href="https://senseshop.dk/">senseshop.dk</a>
+				<a href="https://cbdanmark.eu/">CBDanmark.eu</a>
+				<a href="https://sensearchives.com">sensearchives.com</a>
+			</div>
+			<div id="status-hint"></div>
+		</div>
+
+		<div id="rotate-hint">↻ Vend telefonen for den bedste oplevelse</div>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":82534172,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusBar = document.getElementById('status-bar');
+	const statusFill = document.getElementById('status-fill');
+	const statusPct = document.getElementById('status-pct');
+	statusPct.textContent = 'Indlæser …';
+	const statusNotice = document.getElementById('status-notice');
+	const statusHint = document.getElementById('status-hint');
+
+	// iPhone i Safari: fuld skærm kræver "Føj til hjemmeskærm" (Safari har ingen Fullscreen API på iPhone)
+	const isIOS = /iPhone|iPod/.test(navigator.userAgent);
+	const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+	if (isIOS && !standalone) {
+		statusHint.textContent = 'Hold telefonen på tværs · Del ⬆︎ → "Føj til hjemmeskærm" giver fuld skærm';
+	} else if (/Android|iPhone|iPad/.test(navigator.userAgent)) {
+		statusHint.textContent = 'Hold telefonen på tværs';
+	}
+
+	let initializing = true;
+
+	// Portræt virker, men landskab er bedst: blød hint i toppen (blokerer intet, forsvinder efter 5 s)
+	const rotateHint = document.getElementById('rotate-hint');
+	let rotateTimer = 0;
+	function checkOrientation() {
+		const touch = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+		const portrait = window.innerHeight > window.innerWidth;
+		clearTimeout(rotateTimer);
+		if (touch && portrait) {
+			rotateHint.classList.add('on');
+			rotateTimer = setTimeout(() => rotateHint.classList.remove('on'), 5000);
+		} else {
+			rotateHint.classList.remove('on');
+		}
+	}
+
+	function hide() {
+		statusOverlay.remove();
+		initializing = false;
+		checkOrientation();
+		window.addEventListener('orientationchange', () => setTimeout(checkOrientation, 300));
+	}
+
+	function fail(err) {
+		console.error(err);
+		statusBar.style.display = 'none';
+		statusNotice.style.display = 'block';
+		document.getElementById('status-links').style.display = 'flex';
+		statusNotice.textContent = (err instanceof Error) ? err.message
+			: (typeof err === 'string') ? err : 'Noget gik galt under indlæsningen.';
+		initializing = false;
+	}
+
+	// Safari ruller/zoomer ellers på dobbelttryk og pinch selv med touch-action
+	document.addEventListener('gesturestart', (e) => e.preventDefault());
+	document.addEventListener('dblclick', (e) => e.preventDefault());
+
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	statusOverlay.style.visibility = 'visible';
+	if (missing.length !== 0) {
+		fail('Din browser mangler: ' + missing.join(', ') + '. Prøv Safari, Chrome eller Firefox i nyeste version — eller besøg butikkerne direkte nedenfor.');
+		return;
+	}
+	// Delbart build (tools/web_share.sh): én pck pr. teksturformat, så hver fil holder sig under
+	// GitHub Pages' 100 MB-grænse. SA_PACKS udfyldes af scriptet; i almindelige builds er den null (én pck).
+	const SA_PACKS = {"s3tc": {"file": "index.pck", "size": 67140684, "extra": {"world": {"file": "world.pck", "size": 15410292}}}, "etc2": {"file": "index_mobile.pck", "size": 50364140, "extra": {"world": {"file": "world_mobile.pck", "size": 12526708}}}};
+	const override = {};
+	if (SA_PACKS) {
+		const forced = new URLSearchParams(window.location.search).get('pack');
+		let s3tc = false, etc2 = false;
+		try {
+			const gl = document.createElement('canvas').getContext('webgl2');
+			if (gl) {
+				s3tc = !!gl.getExtension('WEBGL_compressed_texture_s3tc');
+				etc2 = !!gl.getExtension('WEBGL_compressed_texture_etc');
+				const lose = gl.getExtension('WEBGL_lose_context');
+				if (lose) lose.loseContext();
+			}
+		} catch (e) { /* vælg desktop-pakken */ }
+		const ua = navigator.userAgent;
+		const mobile = /iPhone|iPad|iPod|Android/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+		const fmt = (forced && SA_PACKS[forced]) ? forced : ((etc2 && (mobile || !s3tc)) ? 'etc2' : 's3tc');
+		const p = SA_PACKS[fmt];
+		override.mainPack = p.file;
+		override.fileSizes = Object.assign({}, GODOT_CONFIG.fileSizes, { [p.file]: p.size });
+		console.log('SA pack: ' + fmt + ' (' + p.file + ', s3tc=' + s3tc + ', etc2=' + etc2 + ', mobil=' + mobile + ')');
+		// Ekstra pakker (tools/packs/): fx world.pck med gaden. Hentes i baggrunden efter start og mountes af
+		// shared/packs.gd (Packs.ensure), når spillet første gang skal bruge dem.
+		window.SA_EXTRA = p.extra || null;
+	}
+	window.SA_PK = {};
+	window.saFetchPack = function (name) {
+		const e = window.SA_EXTRA && window.SA_EXTRA[name];
+		if (!e || window.SA_PK[name]) return;
+		const st = window.SA_PK[name] = { pct: 0, buf: null, err: null };
+		fetch(e.file).then(async (r) => {
+			if (!r.ok || !r.body) throw new Error('HTTP ' + r.status);
+			const out = new Uint8Array(e.size);
+			const rd = r.body.getReader();
+			let got = 0;
+			for (;;) {
+				const { done, value } = await rd.read();
+				if (done) break;
+				if (got + value.length > out.length) throw new Error('større end manifestet');
+				out.set(value, got);
+				got += value.length;
+				st.pct = Math.floor(100 * got / e.size);
+			}
+			if (got !== e.size) throw new Error('fik ' + got + ' af ' + e.size + ' bytes');
+			st.buf = out.buffer;
+			console.log('SA extra pack klar: ' + name + ' (' + got + ' bytes)');
+		}).catch((err) => { st.err = String(err); console.error('SA extra pack fejl: ' + name, err); });
+	};
+	engine.startGame({
+		'mainPack': override.mainPack,
+		'fileSizes': override.fileSizes,
+		'onProgress': function (current, total) {
+			if (current > 0 && total > 0) {
+				const pct = Math.min(100, Math.round(100 * current / total));
+				statusFill.style.width = pct + '%';
+				statusPct.textContent = pct < 100 ? pct + ' %' : 'Starter …';
+			}
+		},
+	}).then(() => {
+		hide();
+		// gaden hentes mens man står i kiosken (efter hovedpakken, så de ikke deler båndbredden)
+		if (window.SA_EXTRA) for (const name in window.SA_EXTRA) window.saFetchPack(name);
+	}, fail);
+}());
+		</script>
+	</body>
+</html>
+
